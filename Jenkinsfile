@@ -25,7 +25,7 @@ pipeline {
         stage('Publish Cucumber Report') {
             steps {
                 // Generate Cucumber HTML reports
-                cucumber fileIncludePattern: '**/target/cucumber/*.json'
+                cucumber fileIncludePattern: '**/target/*.json'
             }
         }
 
