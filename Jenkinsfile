@@ -15,13 +15,6 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                // Clean and install Maven dependencies
-                sh 'mvn clean install'
-            }
-        }
-
         stage('Run Tests') {
             steps {
                 // Run the tests using Maven
