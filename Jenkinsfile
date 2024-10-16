@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from your Git repository
-                git 'https://github.com/kasthuriChidambaram/UIAutomationWithPicoContainer.git'
+                git url: 'https://github.com/kasthuriChidambaram/UIAutomationWithPicoContainer.git', branch: 'main'
             }
         }
 
@@ -36,7 +36,7 @@ pipeline {
             }
         }
 
-    
+
     }
 
     post {
