@@ -1,5 +1,6 @@
 package support;
 
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -33,6 +34,7 @@ public class WebDriverManagerUtil {
                 options.addArguments("--incognito");
                 options.addArguments("--disable-blink-features");
                 options.addArguments("--disable-blink-features=AutomationControlled");
+                options.setPageLoadStrategy(PageLoadStrategy.NORMAL);
                 driver = new ChromeDriver(options);
                 driver.manage().window().maximize();
                 break;
