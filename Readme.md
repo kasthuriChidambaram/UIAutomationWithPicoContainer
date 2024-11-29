@@ -1,5 +1,5 @@
 # Selenium Cucumber Java Project
-This project automates the flight booking process on the MakeMyTrip website using Selenium, Cucumber, and Java. The project supports dependency injection with PicoContainer, parallel execution, multiple browsers, and is integrated with Jenkins for CI/CD.
+This project automates the flight booking process on the website using Selenium, Cucumber, and Java. The project supports dependency injection with PicoContainer, parallel execution, multiple browsers, and is integrated with Jenkins for CI/CD.
 
 # Project Setup
 ## Prerequisites
@@ -31,7 +31,7 @@ Use Maven to install the necessary project dependencies.
 The project uses PicoContainer to manage and inject shared dependencies, such as WebDriver, across step definition classes, ensuring seamless integration and state management during test execution.
 
 ## Locators Management
-All locators for elements on the MakeMyTrip website are managed in a separate file for better maintainability and easier updates, should the UI of the website change.
+All locators for elements on the website are managed in a separate file for better maintainability and easier updates, should the UI of the website change.
 
 ## Running Tests Locally
 Tests can be executed locally using Maven. The browser for test execution can be specified as a command-line argument, allowing flexibility to run tests across different browsers.
