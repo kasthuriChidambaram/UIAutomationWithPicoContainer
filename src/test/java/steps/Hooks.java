@@ -15,7 +15,7 @@ public class Hooks {
 
     @After
     public void tearDown(Scenario scenario) {
-        //driver.quit();// Quit the driver after all tests
+        driver.quit();// Quit the driver after all tests
     }
 
 

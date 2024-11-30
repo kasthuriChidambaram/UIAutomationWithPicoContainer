@@ -3,6 +3,7 @@ package support;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Function;
 
 public class DriverUtil {
     private WebDriver driver;
@@ -31,61 +33,6 @@ public class DriverUtil {
 
         }
         return properties;
-    }
-
-    public WebElement getElement(String key) {
-        Properties locatorProperties = loadLocatorProperties();
-        String locator = locatorProperties.getProperty(key);
-        FluentWait<WebDriver> wait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(30))
-                .pollingEvery(Duration.ofSeconds(2));
-
-        try {
-            WebElement element = wait.until(webDriver -> {
-                if (key.endsWith("css")) {
-                    return wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(locator)));
-                } else if (key.endsWith("xpath")) {
-                    return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(locator)));
-                } else if (key.endsWith("id")) {
-                    return wait.until(ExpectedConditions.elementToBeClickable(By.id(locator)));
-                } else {
-                    throw new IllegalArgumentException("Unknown locator type for key: " + key);
-                }
-            });
-
-            // Assert that element is not null (optional)
-            Assert.assertNotNull("Element not found: " + key, element);
-            return element;
-        } catch (TimeoutException | NoSuchElementException e) {
-            logger.error("Element not found for key: " + key);
-            throw e;
-        }
-
-    }
-
-    public WebElement getDynamicElement(String locator, String key) {
-        FluentWait<WebDriver> wait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(30))
-                .pollingEvery(Duration.ofSeconds(2));
-
-        try {
-            WebElement element = wait.until(webDriver -> {
-                if (key.endsWith("css")) {
-                    return wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(locator)));
-                } else if (key.endsWith("xpath")) {
-                    return wait.until(ExpectedConditions.elementToBeClickable(By.xpath(locator)));
-                } else {
-                    throw new IllegalArgumentException("Unknown locator type for key: " + key);
-                }
-            });
-
-            // Assert that element is not null (optional)
-            Assert.assertNotNull("Element not found: " + key, element);
-            return element;
-        } catch (NoSuchElementException e) {
-            logger.error("Element not found for key: " + key);
-            throw e;
-        }
     }
 
     public void handleOptionalPopup(String locator, String popupName) {
@@ -109,9 +56,7 @@ public class DriverUtil {
     public WebElement scrollToElement(String key, int xAxis, int yAxis) {
         WebElement element = getElement(key);
         int deltaY = element.getRect().y;
-        new Actions(driver)
-                .scrollByAmount(xAxis, yAxis)
-                .perform();
+        new Actions(driver).scrollByAmount(xAxis, yAxis).perform();
 
         return element;
     }
@@ -129,65 +74,6 @@ public class DriverUtil {
         return element;
     }
 
-    public WebElement getVisibleElement(String key) {
-        Properties locatorProperties = loadLocatorProperties();
-        String locator = locatorProperties.getProperty(key);
-        FluentWait<WebDriver> wait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(60))
-                .pollingEvery(Duration.ofSeconds(2));
-
-        try {
-            WebElement element = wait.until(webDriver -> {
-                if (key.endsWith("css")) {
-                    return wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(locator)));
-                } else if (key.endsWith("xpath")) {
-                    return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locator)));
-                } else if (key.endsWith("id")) {
-                    return wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(locator)));
-                } else {
-                    throw new IllegalArgumentException("Unknown locator type for key: " + key);
-                }
-            });
-
-            // Assert that element is not null (optional)
-            Assert.assertNotNull("Element not found: " + key, element);
-            return element;
-        } catch (TimeoutException | NoSuchElementException e) {
-            logger.error("Element not found for key: " + key);
-            throw e;
-        }
-
-    }
-
-    public List<WebElement> getElements(String key) {
-        Properties locatorProperties = loadLocatorProperties();
-        String locator = locatorProperties.getProperty(key);
-        FluentWait<WebDriver> wait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(60))
-                .pollingEvery(Duration.ofSeconds(2));
-
-        try {
-            List<WebElement> elements = wait.until(webDriver -> {
-                if (key.endsWith("css")) {
-                    return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(locator)));
-                } else if (key.endsWith("xpath")) {
-                    return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(locator)));
-                } else if (key.endsWith("id")) {
-                    return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id(locator)));
-                } else {
-                    throw new IllegalArgumentException("Unknown locator type for key: " + key);
-                }
-            });
-
-            // Assert that element is not null (optional)
-            Assert.assertNotNull("Element not found: " + key, elements);
-            return elements;
-        } catch (TimeoutException | NoSuchElementException e) {
-            logger.error("Element not found for key: " + key);
-            throw e;
-        }
-
-    }
 
     public void actionsClick(String key) {
         Actions actions = new Actions(driver);
@@ -217,9 +103,9 @@ public class DriverUtil {
 
     //Focus-Based Event Listeners:
     //Many web applications, especially those built with JavaScript frameworks, may not respond to the default click()
-    // method provided by Selenium.
+    //method provided by Selenium.
     //Instead, they might listen for keyboard events (like pressing the Enter or Space key) or focus events
-    // (when an element gains focus) to open or trigger dropdown menus.
+    //(when an element gains focus) to open or trigger dropdown menus.
     public void clickBySendKeys(String key) {
         WebElement dropdown = getVisibleElement(key);
         dropdown.sendKeys(Keys.ARROW_DOWN);
@@ -233,5 +119,87 @@ public class DriverUtil {
             throw new RuntimeException(e);
         }
     }
+
+    public WebElement getElement(String key) {
+        try {
+            WebElement element = waitForElement(key, ExpectedConditions::elementToBeClickable);
+            Assert.assertNotNull("Element not found: " + key, element);
+            return element;
+        } catch (TimeoutException | NoSuchElementException e) {
+            logger.error("Element not found for key: " + key, e);
+            throw e;
+        }
+    }
+
+    public WebElement getVisibleElement(String key) {
+        try {
+            WebElement element = waitForElement(key, ExpectedConditions::visibilityOfElementLocated);
+            Assert.assertNotNull("Element not found: " + key, element);
+            return element;
+        } catch (TimeoutException | NoSuchElementException e) {
+            logger.error("Element not found for key: " + key, e);
+            throw e;
+        }
+    }
+
+    public List<WebElement> getElements(String key) {
+        try {
+            List<WebElement> elements = waitForElement(key, ExpectedConditions::visibilityOfAllElementsLocatedBy);
+            Assert.assertNotNull("Elements not found: " + key, elements);
+            return elements;
+        } catch (TimeoutException | NoSuchElementException e) {
+            logger.error("Elements not found for key: " + key, e);
+            throw e;
+        }
+    }
+
+    private <T> T waitForElement(String key, Function<By, ExpectedCondition<T>> conditionFunction) {
+        Properties locatorProperties = loadLocatorProperties();
+        String locator = locatorProperties.getProperty(key);
+        FluentWait<WebDriver> wait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(60))
+                .pollingEvery(Duration.ofSeconds(2));
+
+        By by;
+        if (key.endsWith("css")) {
+            by = By.cssSelector(locator);
+        } else if (key.endsWith("xpath")) {
+            by = By.xpath(locator);
+        } else if (key.endsWith("id")) {
+            by = By.id(locator);
+        } else {
+            throw new IllegalArgumentException("Unknown locator type for key: " + key);
+        }
+
+        return wait.until(conditionFunction.apply(by));
+    }
+
+    public WebElement getDynamicElement(String locator, String key) {
+        FluentWait<WebDriver> wait = new FluentWait<>(driver)
+                .withTimeout(Duration.ofSeconds(60))
+                .pollingEvery(Duration.ofSeconds(2));
+
+        try {
+            By by = getLocatorByType(locator, key);
+            WebElement element = wait.until(ExpectedConditions.elementToBeClickable(by));
+            Assert.assertNotNull("Element not found: " + key, element); // Optional assertion
+            return element;
+        } catch (TimeoutException | NoSuchElementException e) {
+            logger.error("Element not found for locator: " + locator + " and key: " + key, e);
+            throw e;
+        }
+    }
+
+    private By getLocatorByType(String locator, String key) {
+        if (key.endsWith("css")) {
+            return By.cssSelector(locator);
+        } else if (key.endsWith("xpath")) {
+            return By.xpath(locator);
+        } else {
+            throw new IllegalArgumentException("Unknown locator type for key: " + key);
+        }
+    }
+
+
 
 }
