@@ -41,5 +41,9 @@ mvn clean test -Dbrowser=chrome
 ## Jenkins Integration
 The project is integrated with Jenkins for continuous integration. A Jenkinsfile is included to configure the pipeline, which automates the process of building the project, running tests, and publishing test reports.
 
+## Automation Demo
+
+You can watch the automation framework in action by [clicking here](demo/FlightBooking.mov).
+
 
 
