@@ -43,7 +43,7 @@ The project is integrated with Jenkins for continuous integration. A Jenkinsfile
 
 ## Automation Demo
 
-You can watch the automation framework in action by [clicking here](demo/FlightBooking.mov).
+You can watch the automation framework in action by [clicking here](src/test/resources/demo/FlightBooking.mov).
 
 
 
